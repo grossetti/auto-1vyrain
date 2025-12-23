@@ -36,8 +36,8 @@ libftdi
 %end
 
 %post
-wget -r -P /root http://localhost:8080/
-mv /root/localhost\:8080 /root/workspace
+mkdir -p /root/workspace
+wget -r -np -nH -P /root/workspace http://localhost:8080/
 cp -r /root/workspace/flashrom /root/flashrom
 chmod +x /root/flashrom/flashrom
 cp -r /root/workspace/bios /root/bios
@@ -46,8 +46,9 @@ mkdir /root/chipsec
 ln -s /usr/bin/chipsec_util /root/chipsec/chipsec_util.py
 ln -s /usr/bin/chipsec_main /root/chipsec/chipsec_main.py
 cp /root/workspace/scripts/start.sh /root/start.sh
+chmod +x /root/start.sh
 rm -rf /root/workspace
 find /root -type f -name "index.html" -delete
-printf "\nif [ -f ~/.bashrc ]; then\n\tchmod +x ~/start.sh\n\t~/start.sh\nfi\n\nexport updated=r3\n" >> /root/.bashrc
+printf "\nif [ -f ~/start.sh ]; then\n\tchmod +x ~/start.sh\n\t~/start.sh\nfi\n\nexport updated=r3\n" >> /root/.bashrc
 systemctl mask NetworkManager-wait-online.service
 %end
