@@ -1,7 +1,7 @@
 lang en_US.UTF-8
 keyboard us
 timezone US/Eastern
-auth --useshadow --passalgo=sha512
+authselect --useshadow --passalgo=sha512
 rootpw --iscrypted $6$IofbdE7LaRem0MPo$O/ZoYrgFxt/l9ToTkl7hJSIzZ3hSjNQo2TAYPPsKJaCzt/R6h7jsH1dcOEWuy46VkMw.eePYN7QDtAveV16Fx0
 selinux --enforcing
 firewall --enabled
@@ -18,8 +18,7 @@ repo --name=fedora-updates --mirrorlist=http://mirrors.fedoraproject.org/mirrorl
 @Core
 kernel
 dracut-live
-python2-pip
-authselect-compat
+python3-pip
 grub2-efi-x64
 grub2-efi-x64-cdboot
 shim-x64
@@ -30,13 +29,10 @@ pciutils-libs
 libusb
 libjaylink
 libftdi
--openssh-server
 -libX*
 -btrfs-progs
--parted
 -snappy
 -trousers
--avahi-libs
 %end
 
 %post
@@ -45,7 +41,7 @@ mv /root/localhost\:8080 /root/workspace
 cp -r /root/workspace/flashrom /root/flashrom
 chmod +x /root/flashrom/flashrom
 cp -r /root/workspace/bios /root/bios
-pip2 install /root/workspace/chipsec/*.whl
+pip3 install /root/workspace/chipsec/*.whl
 mkdir /root/chipsec
 ln -s /usr/bin/chipsec_util /root/chipsec/chipsec_util.py
 ln -s /usr/bin/chipsec_main /root/chipsec/chipsec_main.py

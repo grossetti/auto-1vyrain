@@ -44,6 +44,23 @@ Please read the [longform FAQ](https://medium.com/@n4ru/1vyrain-an-xx30-thinkpad
    docker run -d --rm -v /dev:/dev -v $PWD/result:/workspace/result --privileged -t 1vyrain:v1.0
    ```
 3. Burn the 1vyrain image onto a flash drive.
+   1. Identify the USB device (e.g. something like /dev/sdX, where X is a letter (e.g. /dev/sdb))
+   ```
+   lsblk -o NAME,SIZE,MODEL,SERIAL,TYPE,MOUNTPOINT
+   ```
+   2. Unmount it if it's mounted (e.g. /dev/sdb1)
+   ```
+   sudo umount /dev/sdX* 2>/dev/null || true
+   ```
+   3. Burn the ISO to the USB flash drive
+   ```
+   sudo dd if=result/1vyrain.iso of=/dev/sdX bs=4M status=progress conv=fsync
+   sync
+   ```
+   4. Verify everything was written (optional)
+   ```
+   sudo cmp -n $(stat -c%s result/1vyrain.iso) result/1vyrain.iso /dev/sdX
+   ```
 4. Boot in UEFI mode from the flash drive, with Secure Boot off.
 5. Follow the on-screen instructions.
 6. That's it!

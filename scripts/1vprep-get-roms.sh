@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir bios
+mkdir -p bios
 cd bios
 
 #https://support.lenovo.com/us/en/downloads/ds029187
