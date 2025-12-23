@@ -36,19 +36,45 @@ libftdi
 %end
 
 %post
+set -euxo pipefail
 mkdir -p /root/workspace
-wget -r -np -nH -P /root/workspace http://localhost:8080/
+
+# Mirror the HTTP tree into /root/workspace as flatly as possible
+wget -r -np -nH --cut-dirs=0 --directory-prefix=/root/workspace http://127.0.0.1:8080/
+
+# If wget still created a host directory (localhost or localhost:8080), flatten it
+if [ -d /root/workspace/localhost ]; then
+  mv /root/workspace/localhost/* /root/workspace/ || true
+  rm -rf /root/workspace/localhost
+fi
+if [ -d /root/workspace/localhost:8080 ]; then
+  mv /root/workspace/localhost:8080/* /root/workspace/ || true
+  rm -rf /root/workspace/localhost:8080
+fi
+
+# Sanity check: fail early if expected content is not present
+test -f /root/workspace/scripts/start.sh
+test -d /root/workspace/flashrom
+test -d /root/workspace/bios
+ls -la /root/workspace/scripts
+
+# Start the real work
 cp -r /root/workspace/flashrom /root/flashrom
 chmod +x /root/flashrom/flashrom
 cp -r /root/workspace/bios /root/bios
+
 pip3 install /root/workspace/chipsec/*.whl
-mkdir /root/chipsec
-ln -s /usr/bin/chipsec_util /root/chipsec/chipsec_util.py
-ln -s /usr/bin/chipsec_main /root/chipsec/chipsec_main.py
+mkdir -p /root/chipsec
+ln -sf /usr/bin/chipsec_util /root/chipsec/chipsec_util.py
+ln -sf /usr/bin/chipsec_main /root/chipsec/chipsec_main.py
+
 cp /root/workspace/scripts/start.sh /root/start.sh
 chmod +x /root/start.sh
+
 rm -rf /root/workspace
 find /root -type f -name "index.html" -delete
+
 printf "\nif [ -f ~/start.sh ]; then\n\tchmod +x ~/start.sh\n\t~/start.sh\nfi\n\nexport updated=r3\n" >> /root/.bashrc
+
 systemctl mask NetworkManager-wait-online.service
 %end
