@@ -35,35 +35,32 @@ Please read the [longform FAQ](https://medium.com/@n4ru/1vyrain-an-xx30-thinkpad
 
 # Installing
 
-1. Build Docker image:
+1. Build Docker image & run Docker container to get bootable iso image in "result" folder.
    ```console
-   docker build --rm -t 1vyrain:v1.0 .
+   chmod +x build-1vyrain-iso.sh
+   ./build-1vyrain-iso.sh
    ```
-2. Run Docker container to get bootable iso image in "result" folder.
-   ```console
-   docker run -d --rm -v /dev:/dev -v $PWD/result:/workspace/result --privileged -t 1vyrain:v1.0
-   ```
-3. Burn the 1vyrain image onto a flash drive.
+2. Burn the 1vyrain image onto a flash drive.
    1. Identify the USB device (e.g. something like /dev/sdX, where X is a letter (e.g. /dev/sdb))
-   ```
+   ```console
    lsblk -o NAME,SIZE,MODEL,SERIAL,TYPE,MOUNTPOINT
    ```
-   2. Unmount it if it's mounted (e.g. /dev/sdb1)
-   ```
+   2. Unmount it if it's mounted
+   ```console
    sudo umount /dev/sdX* 2>/dev/null || true
    ```
    3. Burn the ISO to the USB flash drive
-   ```
+   ```console
    sudo dd if=result/1vyrain.iso of=/dev/sdX bs=4M status=progress conv=fsync
    sync
    ```
    4. Verify everything was written (optional)
-   ```
+   ```console
    sudo cmp -n $(stat -c%s result/1vyrain.iso) result/1vyrain.iso /dev/sdX
    ```
-4. Boot in UEFI mode from the flash drive, with Secure Boot off.
-5. Follow the on-screen instructions.
-6. That's it!
+3. Boot in UEFI mode from the flash drive, with Secure Boot off.
+4. Login (user: root, password: <EMPTY>) & follow the on-screen instructions.
+5. That's it!
 
 # License
 

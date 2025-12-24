@@ -1,7 +1,6 @@
 lang en_US.UTF-8
 keyboard us
 timezone US/Eastern
-authselect --useshadow --passalgo=sha512
 rootpw --iscrypted $6$IofbdE7LaRem0MPo$O/ZoYrgFxt/l9ToTkl7hJSIzZ3hSjNQo2TAYPPsKJaCzt/R6h7jsH1dcOEWuy46VkMw.eePYN7QDtAveV16Fx0
 selinux --enforcing
 firewall --enabled
