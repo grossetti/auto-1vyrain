@@ -24,7 +24,7 @@ shim-x64
 wget
 isomd5sum
 dmidecode
-pciutils-libs
+pciutils
 libusb
 libjaylink
 libftdi
@@ -37,6 +37,7 @@ libftdi
 %post
 set -euxo pipefail
 mkdir -p /root/workspace
+echo 'export PATH=/usr/local/bin:$PATH' >> /root/.bashrc
 
 # Mirror the HTTP tree into /root/workspace as flatly as possible
 wget -r -np -nH --cut-dirs=0 --directory-prefix=/root/workspace http://127.0.0.1:8080/
@@ -63,9 +64,6 @@ chmod +x /root/flashrom/flashrom
 cp -r /root/workspace/bios /root/bios
 
 pip3 install /root/workspace/chipsec/*.whl
-mkdir -p /root/chipsec
-ln -sf /usr/bin/chipsec_util /root/chipsec/chipsec_util.py
-ln -sf /usr/bin/chipsec_main /root/chipsec/chipsec_main.py
 
 cp /root/workspace/scripts/start.sh /root/start.sh
 chmod +x /root/start.sh
